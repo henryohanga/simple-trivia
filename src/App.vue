@@ -1,32 +1,42 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+    <TriviaNavbar
+      :answered="correctlyAnswered"
+      :total="totalAnswered"
+    ></TriviaNavbar>
+    <div class="container mt-5 pt-4">
+      <router-view />
     </div>
-    <router-view />
   </div>
 </template>
 
-<style>
-#app {
-  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script>
+import TriviaNavbar from "@/components/TriviaNavbar";
 
-#nav {
-  padding: 30px;
-}
+export default {
+  components: {
+    TriviaNavbar
+  },
+  data() {
+    return {
+      correctlyAnswered: 0,
+      totalAnswered: 0
+    };
+  },
+  methods: {
+    updateScore(obj) {
+      this.totalAnswered++;
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
+      if (obj.correct) {
+        this.correctlyAnswered++;
+      }
+    }
+  },
 
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
-</style>
+  mounted() {
+    this.$root.$on("question-answered", this.updateScore);
+  }
+};
+</script>
+
+<style></style>
